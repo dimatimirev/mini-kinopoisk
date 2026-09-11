@@ -1,0 +1,54 @@
+
+###
+POST http://localhost:8080/api/films
+Content-Type: application/json
+
+{
+  "id": 4,
+  "title": "Матрица",
+  "year": 1999,
+  "rating": 8.7
+}
+
+###
+GET http://localhost:8080/api/films
+
+###
+GET http://localhost:8080/api/films/2
+
+###
+GET http://localhost:8080/api/films/999
+
+###
+DELETE http://localhost:8080/api/films/3
+
+###
+GET http://localhost:8080/api/films
+
+###
+DELETE http://localhost:8080/api/films/999
+###
+POST http://localhost:8080/api/films
+Content-Type: application/json
+
+{
+  "title": "Матрица",
+  "year": 1999,
+  "rating": 8.7
+}
+
+###
+GET http://localhost:8080/api/films
+}
+###
+PUT http://localhost:8080/api/films/2
+Content-Type: application/json
+
+{
+  "title": "Начало — обновленный фильм",
+  "year": 2010,
+  "rating": 9.5
+}
+
+###
+GET http://localhost:8080/api/films

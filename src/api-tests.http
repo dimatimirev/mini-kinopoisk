@@ -1,0 +1,346 @@
+### Получить все фильмы
+GET http://localhost:8080/api/films
+
+
+### Получить фильм с ID 1
+GET http://localhost:8080/api/films/1
+
+
+### Получить несуществующий фильм
+GET http://localhost:8080/api/films/999999
+
+
+### Добавить фильм
+POST http://localhost:8080/api/films
+Content-Type: application/json
+
+{
+  "title": "Интерстеллар",
+  "year": 2014,
+  "rating": 8.7,
+  "genre": "Фантастика"
+}
+
+
+### Изменить фильм
+PUT http://localhost:8080/api/films/1
+Content-Type: application/json
+
+{
+  "title": "Титаник — обновленный",
+  "year": 1997,
+  "rating": 9.0,
+  "genre": "Драма"
+}
+
+
+### Удалить фильм
+DELETE http://localhost:8080/api/films/1
+
+### Поиск фильма по названию
+GET http://localhost:8080/api/films/search?title=Матрица
+
+### Поиск без учета регистра
+GET http://localhost:8080/api/films/search?title=матрица
+
+### Поиск по части названия
+GET http://localhost:8080/api/films/search?title=Мат
+
+### Фильтр по жанру
+GET http://localhost:8080/api/films/filter?genre=Фантастика
+
+###
+
+### Фильтр по минимальному рейтингу
+GET http://localhost:8080/api/films/filter?minRating=8
+
+###
+
+### Фильтр по жанру и рейтингу
+GET http://localhost:8080/api/films/filter?genre=Фантастика&minRating=8
+
+###
+
+### Фильтр без параметров
+GET http://localhost:8080/api/films/filter
+
+### Сортировка по рейтингу по возрастанию
+GET http://localhost:8080/api/films?sort=rating&direction=asc
+
+### Сортировка по рейтингу по убыванию
+GET http://localhost:8080/api/films?sort=rating&direction=desc
+
+### Сортировка по году по возрастанию
+GET http://localhost:8080/api/films?sort=year&direction=asc
+
+### Сортировка по названию
+GET http://localhost:8080/api/films?sort=title&direction=asc
+
+### Поиск по названию
+GET http://localhost:8080/api/films/search?title=Матрица
+
+### Поиск без учета регистра
+GET http://localhost:8080/api/films/search?title=матрица
+
+### Сортировка по рейтингу ↓
+GET http://localhost:8080/api/films?sort=rating&direction=desc
+
+### Сортировка по году ↑
+GET http://localhost:8080/api/films?sort=year&direction=asc
+
+### Сортировка по названию
+GET http://localhost:8080/api/films?sort=title&direction=asc
+
+### Неправильное поле сортировки
+GET http://localhost:8080/api/films?sort=abcdef&direction=asc
+
+### Неправильное направление сортировки
+GET http://localhost:8080/api/films?sort=rating&direction=hello
+
+### Поиск
+GET http://localhost:8080/api/films/search?title=Матрица
+
+### Поиск без учета регистра
+GET http://localhost:8080/api/films/search?title=матрица
+
+### Фильтр по жанру
+GET http://localhost:8080/api/films?genre=Фантастика
+
+### Рейтинг от 8
+GET http://localhost:8080/api/films?ratingFrom=8
+
+### Рейтинг от 8 до 9
+GET http://localhost:8080/api/films?ratingFrom=8&ratingTo=9
+
+### Фильмы начиная с 2000 года
+GET http://localhost:8080/api/films?yearFrom=2000
+
+### Фильмы с 2000 по 2020 год
+GET http://localhost:8080/api/films?yearFrom=2000&yearTo=2020
+
+### Фантастика с рейтингом от 8, сортировка по рейтингу
+GET http://localhost:8080/api/films?genre=Фантастика&ratingFrom=8&sort=rating&direction=desc
+
+### Фильтрация по жанру
+GET http://localhost:8080/api/films/filter?genre=Фантастика
+
+### Фильтрация по жанру без учета регистра
+GET http://localhost:8080/api/films/filter?genre=фантастика
+
+### Фильтрация по минимальному рейтингу
+GET http://localhost:8080/api/films/filter?minRating=8.0
+
+### Фильтрация по жанру и рейтингу
+GET http://localhost:8080/api/films/filter?genre=Фантастика&minRating=8.0
+
+### Проверка старых функций
+GET http://localhost:8080/api/films
+
+### Один фильм
+GET http://localhost:8080/api/films/1
+
+### Поиск
+GET http://localhost:8080/api/films/search?title=Матрица
+
+### Несуществующий филм
+GET http://localhost:8080/api/films/999999
+
+### Проверка валидации: пустое название
+POST http://localhost:8080/api/films
+Content-Type: application/json
+
+{
+  "title": "",
+  "year": 2026,
+  "rating": 8.5,
+  "genre": "Фантастика"
+}
+
+### Проверка валидации: неправильный год
+POST http://localhost:8080/api/films
+Content-Type: application/json
+
+{
+  "title": "Тестовый фильм",
+  "year": 1800,
+  "rating": 8.0,
+  "genre": "Драма"
+}
+
+### Проверка правильных данных
+POST http://localhost:8080/api/films
+Content-Type: application/json
+
+{
+  "title": "Интерстеллар",
+  "year": 2014,
+  "rating": 8.7,
+  "genre": "Фантастика"
+}
+
+### Пустое название
+POST http://localhost:8080/api/films
+Content-Type: application/json
+
+{
+  "title": "",
+  "year": 2026,
+  "rating": 8.5,
+  "genre": "Фантастика"
+}
+
+### Рейтинг больше 10
+POST http://localhost:8080/api/films
+Content-Type: application/json
+
+{
+  "title": "Тестовый фильм",
+  "year": 2026,
+  "rating": 15.0,
+  "genre": "Фантастика"
+}
+
+### Неправильный год
+POST http://localhost:8080/api/films
+Content-Type: application/json
+
+{
+  "title": "Тестовый фильм",
+  "year": 1800,
+  "rating": 8.0,
+  "genre": "Драма"
+}
+
+### Проверим 404
+GET http://localhost:8080/api/films/999999
+
+@Test
+void createFilmWithoutTitle_shouldReturn400() {
+
+    String requestBody = """
+            {
+                "year": 2020,
+                "rating": 8.0,
+                "genre": "Фантастика"
+            }
+            """;
+
+    given()
+            .contentType(ContentType.JSON)
+            .body(requestBody)
+            .when()
+            .post("/api/films")
+            .then()
+            .statusCode(400);
+}
+
+@Test
+void createFilmWithoutYear_shouldReturn400() {
+
+    String requestBody = """
+            {
+                "title": "Фильм без года",
+                "rating": 8.0,
+                "genre": "Драма"
+            }
+            """;
+
+    given()
+            .contentType(ContentType.JSON)
+            .body(requestBody)
+            .when()
+            .post("/api/films")
+            .then()
+            .statusCode(400);
+}
+
+@Test
+void createFilmWithInvalidRating_shouldReturn400() {
+
+    String requestBody = """
+            {
+                "title": "Фильм с неправильным рейтингом",
+                "year": 2020,
+                "rating": 15.0,
+                "genre": "Драма"
+            }
+            """;
+
+    given()
+            .contentType(ContentType.JSON)
+            .body(requestBody)
+            .when()
+            .post("/api/films")
+            .then()
+            .statusCode(400);
+}
+
+@Test
+void createFilmWithInvalidYear_shouldReturn400() {
+
+    String requestBody = """
+            {
+                "title": "Очень старый фильм",
+                "year": 1500,
+                "rating": 8.0,
+                "genre": "Драма"
+            }
+            """;
+
+    given()
+            .contentType(ContentType.JSON)
+            .body(requestBody)
+            .when()
+            .post("/api/films")
+            .then()
+            .statusCode(400);
+}
+
+### Проверить API именно внутри Docker
+GET http://localhost:8080/api/films
+
+###
+GET http://localhost:8080/api/films/1
+
+### Проверим ошибку
+GET http://localhost:8080/api/films/999999
+
+### Проверка Docker,получение всех фильмов
+GET http://localhost:8080/api/films
+
+### Получить конкретный фильм
+GET http://localhost:8080/api/films/1
+
+### Проверить 404
+GET http://localhost:8080/api/films/999999
+
+### Поиск
+GET http://localhost:8080/api/films/search?title=Интер
+
+### Фильтрация
+GET http://localhost:8080/api/films/filter?genre=Фантастика&minRating=8
+
+### Запрос на создание фильма
+POST http://localhost:8080/films
+Content-Type: application/json
+
+{
+  "title": "Интерстеллар",
+  "genre": "Фантастика",
+  "year": 2014,
+ "rating": 8.6
+}
+
+###
+GET http://localhost:8080/films
+
+###
+GET http://localhost:8080/api/films
+
+###
+GET http://localhost:8080/api/films/1
+
+###
+GET http://localhost:8080/api/films/999999
+
+###

@@ -1,0 +1,640 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <title>Mini Kinopoisk Frontend</title>
+
+    <!-- Bootstrap -->
+    <link
+            href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css"
+            rel="stylesheet"
+    >
+
+    <style>
+        .rating-star {
+            color: gold;
+        }
+    </style>
+</head>
+
+<body class="bg-light">
+
+<div class="container py-5">
+
+    <h1 class="mb-4 text-center">
+        🎬 Mini Kinopoisk
+    </h1>
+
+
+    <!-- Кнопка добавления + поиск -->
+    <div class="d-flex justify-content-between align-items-center mb-4">
+
+        <button
+                class="btn btn-primary"
+                data-bs-toggle="modal"
+                data-bs-target="#addFilmModal">
+            + Добавить фильм
+        </button>
+
+        <input
+                type="text"
+                id="searchInput"
+                class="form-control w-25"
+                placeholder="Поиск по названию..."
+        >
+
+    </div>
+
+
+    <!-- Список фильмов -->
+    <div id="filmsContainer" class="row">
+
+        <!-- Сюда JavaScript добавит фильмы -->
+
+    </div>
+
+</div>
+
+
+<!-- ========================= -->
+<!-- Модальное окно добавления -->
+<!-- ========================= -->
+
+<div
+        class="modal fade"
+        id="addFilmModal"
+        tabindex="-1"
+        aria-labelledby="modalLabel"
+        aria-hidden="true">
+
+    <div class="modal-dialog">
+
+        <div class="modal-content">
+
+            <div class="modal-header">
+
+                <h5 class="modal-title" id="modalLabel">
+                    Новый фильм
+                </h5>
+
+                <button
+                        type="button"
+                        class="btn-close"
+                        data-bs-dismiss="modal"
+                        aria-label="Close">
+                </button>
+
+            </div>
+
+
+            <div class="modal-body">
+
+                <form id="addFilmForm">
+
+                    <!-- Название -->
+                    <div class="mb-3">
+
+                        <label class="form-label">
+                            Название
+                        </label>
+
+                        <input
+                                type="text"
+                                class="form-control"
+                                id="title"
+                                required
+                        >
+
+                    </div>
+
+
+                    <!-- Год -->
+                    <div class="mb-3">
+
+                        <label class="form-label">
+                            Год выпуска
+                        </label>
+
+                        <input
+                                type="number"
+                                class="form-control"
+                                id="year"
+                                required
+                        >
+
+                    </div>
+
+
+                    <!-- Рейтинг -->
+                    <div class="mb-3">
+
+                        <label class="form-label">
+                            Рейтинг (0.0 - 10.0)
+                        </label>
+
+                        <input
+                                type="number"
+                                step="0.1"
+                                class="form-control"
+                                id="rating"
+                                required
+                        >
+
+                    </div>
+
+
+                    <!-- Ошибка -->
+                    <div
+                            id="errorMsg"
+                            class="alert alert-danger d-none">
+                    </div>
+
+
+                    <!-- Сохранить -->
+                    <button
+                            type="submit"
+                            class="btn btn-success w-100">
+                        Сохранить
+                    </button>
+
+                </form>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+
+<!-- Bootstrap JavaScript -->
+
+<script
+        src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js">
+</script>
+
+
+<script>
+
+    // ==========================================
+    // URL нашего Spring Boot API
+    // ==========================================
+
+    const API_URL = '/api/films';
+
+
+    // ==========================================
+    // Получаем элементы страницы
+    // ==========================================
+
+    const filmsContainer =
+        document.getElementById('filmsContainer');
+
+    const addFilmForm =
+        document.getElementById('addFilmForm');
+
+    const errorMsg =
+        document.getElementById('errorMsg');
+
+    const searchInput =
+        document.getElementById('searchInput');
+
+
+    // ==========================================
+    // Загрузка фильмов с сервера
+    // ==========================================
+
+    async function loadFilms() {
+
+        try {
+
+            const response = await fetch(API_URL);
+
+
+            if (!response.ok) {
+
+                throw new Error(
+                    'Ошибка загрузки фильмов'
+                );
+
+            }
+
+
+            const films = await response.json();
+
+
+            // Показываем фильмы
+            renderFilms(films);
+
+
+        } catch (error) {
+
+            console.error(
+                'Ошибка загрузки:',
+                error
+            );
+
+
+            filmsContainer.innerHTML = `
+                <div class="col-12">
+                    <div class="alert alert-danger">
+                        Не удалось загрузить фильмы.
+                        Проверьте, запущен ли Spring Boot.
+                    </div>
+                </div>
+            `;
+
+        }
+
+    }
+
+
+    // ==========================================
+    // Отрисовка фильмов
+    // ==========================================
+
+    function renderFilms(films) {
+
+        if (films.length === 0) {
+
+            filmsContainer.innerHTML = `
+                <div class="col-12">
+                    <div class="alert alert-info">
+                        Фильмы не найдены.
+                    </div>
+                </div>
+            `;
+
+            return;
+        }
+
+
+        filmsContainer.innerHTML = films.map(film => `
+
+            <div class="col-md-4 mb-4">
+
+                <div class="card h-100 shadow-sm border-0">
+
+                    <div class="card-body">
+
+                        <h5 class="card-title fw-bold">
+                            ${film.title}
+                        </h5>
+
+
+                        <p class="card-text text-muted mb-2">
+
+                            📅 ${film.year}
+
+                            &nbsp; | &nbsp;
+
+                            ⭐ ${Number(film.rating).toFixed(1)}
+
+                        </p>
+
+
+                        <p class="card-text small text-muted">
+
+                            ID: ${film.id}
+
+                        </p>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        `).join('');
+
+    }
+
+
+    // ==========================================
+    // Показ ошибки
+    // ==========================================
+
+    function showError(message) {
+
+        errorMsg.textContent = message;
+
+        errorMsg.classList.remove('d-none');
+
+    }
+
+
+    // ==========================================
+    // Добавление фильма
+    // ==========================================
+
+    addFilmForm.addEventListener(
+        'submit',
+        async function (event) {
+
+            // Не перезагружаем страницу
+            event.preventDefault();
+
+
+            // Убираем старую ошибку
+            errorMsg.classList.add('d-none');
+
+            errorMsg.textContent = '';
+
+
+            // ==================================
+            // Получаем данные из формы
+            // ==================================
+
+            const title =
+                document.getElementById('title')
+                    .value
+                    .trim();
+
+
+            const yearInput =
+                document.getElementById('year')
+                    .value;
+
+
+            const ratingInput =
+                document.getElementById('rating')
+                    .value;
+
+
+            // ==================================
+            // Проверяем название
+            // ==================================
+
+            if (!title) {
+
+                showError(
+                    'Название фильма обязательно'
+                );
+
+                return;
+
+            }
+
+
+            // ==================================
+            // Проверяем год
+            // ==================================
+
+            const year =
+                parseInt(yearInput);
+
+
+            if (
+                isNaN(year) ||
+                year < 1800 ||
+                year > new Date().getFullYear() + 1
+            ) {
+
+                showError(
+                    'Год должен быть корректным числом'
+                );
+
+                return;
+
+            }
+
+
+            // ==================================
+            // Проверяем рейтинг
+            // ==================================
+
+            const rating =
+                parseFloat(ratingInput);
+
+
+            if (
+                isNaN(rating) ||
+                rating < 0 ||
+                rating > 10
+            ) {
+
+                showError(
+                    'Рейтинг должен быть от 0 до 10'
+                );
+
+                return;
+
+            }
+
+
+            // ==================================
+            // Создаём объект фильма
+            // ==================================
+
+            const newFilm = {
+
+                title: title,
+
+                year: year,
+
+                rating: rating
+
+            };
+
+
+            console.log(
+                'Отправляем фильм:',
+                newFilm
+            );
+
+
+            // ==================================
+            // POST запрос
+            // ==================================
+
+            try {
+
+                const response = await fetch(
+                    API_URL,
+                    {
+
+                        method: 'POST',
+
+                        headers: {
+                            'Content-Type':
+                                'application/json'
+                        },
+
+                        body:
+                            JSON.stringify(newFilm)
+
+                    }
+                );
+
+
+                // ==================================
+                // Обрабатываем ошибку сервера
+                // ==================================
+
+                if (!response.ok) {
+
+                    const errorData =
+                        await response
+                            .json()
+                            .catch(() => ({}));
+
+
+                    showError(
+
+                        errorData.message ||
+
+                        errorData.error ||
+
+                        'Ошибка при добавлении фильма'
+
+                    );
+
+
+                    return;
+
+                }
+
+
+                // ==================================
+                // Получаем созданный фильм
+                // ==================================
+
+                const createdFilm =
+                    await response.json();
+
+
+                console.log(
+                    'Фильм добавлен:',
+                    createdFilm
+                );
+
+
+                // ==================================
+                // Закрываем модальное окно
+                // ==================================
+
+                const modalElement =
+                    document.getElementById(
+                        'addFilmModal'
+                    );
+
+
+                const modal =
+                    bootstrap.Modal
+                        .getInstance(modalElement);
+
+
+                if (modal) {
+
+                    modal.hide();
+
+                }
+
+
+                // ==================================
+                // Очищаем форму
+                // ==================================
+
+                addFilmForm.reset();
+
+
+                // ==================================
+                // Загружаем фильмы заново
+                // ==================================
+
+                await loadFilms();
+
+            }
+
+
+            catch (error) {
+
+                console.error(
+                    'Ошибка:',
+                    error
+                );
+
+
+                showError(
+                    'Ошибка соединения с сервером'
+                );
+
+            }
+
+        }
+    );
+
+
+    // ==========================================
+    // Поиск по названию
+    // ==========================================
+
+    searchInput.addEventListener(
+        'input',
+        async function () {
+
+            const searchText =
+                searchInput.value
+                    .trim()
+                    .toLowerCase();
+
+
+            // Если поиск пустой —
+            // показываем все фильмы
+
+            if (!searchText) {
+
+                loadFilms();
+
+                return;
+
+            }
+
+
+            try {
+
+                const response =
+                    await fetch(API_URL);
+
+
+                const films =
+                    await response.json();
+
+
+                const filteredFilms =
+                    films.filter(film =>
+                        film.title
+                            .toLowerCase()
+                            .includes(searchText)
+                    );
+
+
+                renderFilms(filteredFilms);
+
+            }
+
+            catch (error) {
+
+                console.error(
+                    'Ошибка поиска:',
+                    error
+                );
+
+            }
+
+        }
+    );
+
+
+    // ==========================================
+    // Запускаем загрузку фильмов
+    // при открытии страницы
+    // ==========================================
+
+    loadFilms();
+
+</script>
+
+</body>
+</html>
